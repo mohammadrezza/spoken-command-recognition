@@ -25,7 +25,7 @@ def real_time():
                     print(dist)
                 os.remove(joined_file)
         except Exception as e:
-            print(e.__str__())
+            # print(e.__str__())
             pass
 
 
