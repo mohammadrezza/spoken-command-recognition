@@ -55,6 +55,7 @@ def extract(sig):
     frames_feats = concat_feats(np.array([energys]).reshape(len(energys), 1))
     # endregion
 
-    frames_feats = frames_feats/frames_feats.max(axis=1).reshape(frames_feats.shape[0],1)
+    # frames_feats = frames_feats/frames_feats.max(axis=1).reshape(frames_feats.shape[0],1)
     # return frames_feats/100000
+
     return frames_feats

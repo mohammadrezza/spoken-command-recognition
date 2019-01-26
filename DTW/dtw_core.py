@@ -1,5 +1,5 @@
 from fastdtw import fastdtw, dtw
-from scipy.spatial.distance import euclidean
+from scipy.spatial.distance import euclidean,minkowski
 import scipy.io.wavfile as wav
 from DTW.extract_features import extract
 from utility import *
@@ -21,7 +21,8 @@ def real_time():
                 test_feats = extract(sig)
                 results = dict()
                 for model_name, model_feats in models.items():
-                    dist, path = dtw(test_feats, model_feats, euclidean)
+                    dist, path = dtw(model_feats,test_feats, minkowski)
+                    print(model_name)
                     print(dist)
                 os.remove(joined_file)
         except Exception as e:
