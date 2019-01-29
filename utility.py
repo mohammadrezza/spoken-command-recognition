@@ -5,7 +5,8 @@ import pickle
 def collect_files(folder_path):
     files = []
     for file in os.listdir(folder_path):
-        files.append((file.replace(".wav", ""), os.path.join(folder_path, file)))
+        if file.endswith(".wav"):
+            files.append((file.replace(".wav", ""), os.path.join(folder_path, file)))
     return files
 
 

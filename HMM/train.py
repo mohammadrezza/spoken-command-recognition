@@ -2,9 +2,54 @@ import scipy.io.wavfile as wav
 from utility import *
 from proj_paths import *
 from DTW.extract_features import extract
+import numpy as np
+import hmmlearn.hmm as hmm
+
+
+def hmm_init(states_num, samples_features):
+    start_porb = np.ones((states_num))
+    start_porb[0] = 0.9
+    start_porb[1:states_num] *= 0.1 / (states_num - 1)
+
+    trans_mat = np.zeros((states_num, states_num))
+
+    for i in range(states_num):
+        trans_mat[i][i] = 0.8
+        if i + 1 < states_num:
+            trans_mat[i][i + 1] = 0.2
+        else:
+            trans_mat[i][i] = 1
+
+    print(start_porb)
+    print(trans_mat)
+
+    states_points = [[] for _ in range(states_num)]
+
+    for i in range(len(samples_features[0])):
+        points = np.array_split(samples_features[i], states_num)
+        for j in range(states_num):
+            for p in points[j]:
+                states_points[j].append(p)
+    # cov = []
+    # mean = []
+    # for i in range(states_num):
+    #     cov.append(np.cov(states_points[i]).tolist())
+    #     mean.append(np.mean(states_points[i]).tolist())
+    #
+    # print(cov)
+    # print(mean)
+
+    model = hmm.GaussianHMM(n_components=states_num, startprob_prior=start_porb,
+                            transmat_prior=trans_mat)
+    return model
+
 
 if __name__ == "__main__":
+
     for raw_voice, joined_voice in collect_files(REF_VOICES_PATH):
         _, sig = wav.read(joined_voice)
         feats = extract(sig)
-        save(feats, raw_voice, HMM_MODELS_PATH)
+        x.append(feats)
+    model = hmm_init(5, x)
+    model.fit(x)
+    save(model, input("enter model name : "), HMM_MODELS_PATH)
