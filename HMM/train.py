@@ -21,8 +21,8 @@ def hmm_init(states_num):
         else:
             trans_mat[i][i] = 1
 
-    print(start_porb)
-    print(trans_mat)
+    # print(start_porb)
+    # print(trans_mat)
 
     # states_points = [[] for _ in range(states_num)]
     #
@@ -40,17 +40,27 @@ def hmm_init(states_num):
     # print(cov)
     # print(mean)
 
-    # model = hmm.GaussianHMM(n_components=states_num, startprob_prior=start_porb,
-    #                         transmat_prior=trans_mat
-    model = hmm.GaussianHMM(n_components=states_num)
+    model = hmm.GaussianHMM(n_components=states_num, startprob_prior=start_porb,
+                            transmat_prior=trans_mat, covariance_type="full")
+
+    # model = hmm.GaussianHMM(n_components=states_num)
     return model
 
 
 if __name__ == "__main__":
+    # np.seterr(all='raise')
     for folder_name, joined_folder in collect_folders(REF_VOICES_PATH):
-        model = hmm_init(5)
+        model = hmm_init(3)
+        samples_feats = []
+        length = []
+        print("creating model for : " + folder_name)
         for voice_name, joined_voice in collect_files(joined_folder):
             _, sig = wav.read(joined_voice)
             feats = extract(sig)
-            model.fit(feats)
+            length.append(feats.shape[0])
+            if samples_feats == []:
+                samples_feats = feats
+            else:
+                samples_feats = np.concatenate((samples_feats, feats), axis=0)
+        model.fit(samples_feats, lengths=length)
         save(model, folder_name, HMM_MODELS_PATH)

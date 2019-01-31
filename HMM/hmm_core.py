@@ -17,7 +17,7 @@ def keep_predicting():
                     print(name, model.score(feat))
                 os.remove(joined_file_path)
         except Exception as e:
-            # print(e.__str__())
+            print(e.__str__())
             pass
 
 
