@@ -4,6 +4,12 @@ from proj_paths import *
 from HMM.extract_features import extract
 
 hmm_dict = dict()
+execute = dict()
+execute["alarm"] = "gnome-terminal"
+execute["google chrome"] = "google-chrome"
+execute["music"] = "spotify"
+execute["paint"] = "gimp"
+execute["telegram"] = "telegram-desktop"
 
 
 def keep_predicting():
@@ -13,11 +19,18 @@ def keep_predicting():
             for raw_file_name, joined_file_path in collect_files(REAL_TIME_PATH):
                 rate, sig = wav.read(joined_file_path)
                 feat = extract(sig)
+                best_score = -10_000_000
+                cmd = None
                 for name, model in hmm_dict.items():
-                    print(name, model.score(feat))
+                    score = model.score(feat)
+                    print(name, score)
+                    if int(score) > best_score:
+                        best_score = score
+                        cmd = execute[name]
+                os.system(cmd)
                 os.remove(joined_file_path)
         except Exception as e:
-            print(e.__str__())
+            # print(e.__str__())
             pass
 
 

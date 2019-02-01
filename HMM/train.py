@@ -41,7 +41,7 @@ def hmm_init(states_num):
     # print(mean)
 
     model = hmm.GaussianHMM(n_components=states_num, startprob_prior=start_porb,
-                            transmat_prior=trans_mat, covariance_type="full")
+                            transmat_prior=trans_mat)
 
     # model = hmm.GaussianHMM(n_components=states_num)
     return model
